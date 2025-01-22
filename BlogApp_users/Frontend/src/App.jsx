@@ -7,54 +7,32 @@ function App() {
     email: "",
     password: "",
   });
-
   async function handleSubmit() {
-    try {
-      let response = await fetch("http://localhost:3000/users", {
-        
-      });
+    let response = await fetch("http://localhost:3000/users", {
+      method: "POST",
+      body: JSON.stringify(userData),
 
-      if (!response.ok) {
-        throw new Error("Failed to create user");
-      }
-
-      let res = await response.json();
-      console.log(res);
-
-    } catch (error) {
-      console.error("Error during the request:", error);
-    }
+      headers: {
+        "Content-Type": "application/json"
+      },
+    });
+    let res = await response.json();
+    alert(res.message)
+    console.log(res);
   }
+  
 
   return (
     <div>
-      <h1>Sign Up</h1>
+      <h1>signUp</h1>
       <div>
-        <input
-          onChange={(e) =>
-            setUserData((prev) => ({ ...prev, name: e.target.value }))
-          }
-          type="text"
-          placeholder="Name"
-        />
+        <input onChange={(e)=>setUserData(prev =>({...prev,name:e.target.value}))} type="text" placeholder="Name" />
         <br />
         <br />
-        <input
-          onChange={(e) =>
-            setUserData((prev) => ({ ...prev, email: e.target.value }))
-          }
-          type="email"
-          placeholder="E-mail"
-        />
+        <input onChange={(e)=>setUserData(prev =>({...prev,email:e.target.value}))} type="email" placeholder="E-mail" />
         <br />
         <br />
-        <input
-          onChange={(e) =>
-            setUserData((prev) => ({ ...prev, password: e.target.value }))
-          }
-          type="password"
-          placeholder="Password"
-        />
+        <input onChange={(e)=>setUserData(prev =>({...prev,password:e.target.value}))} type="password" placeholder="Password" />
       </div>
       <br />
       <button onClick={handleSubmit}>SignUp</button>
