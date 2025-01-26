@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
@@ -7,8 +7,21 @@ function App() {
     email: "",
     password: "",
   });
+
+  const [blogs, setBlogs]= useState([])
+async function fetchBlogs() {
+  let data= await fetch("http://localhost:3000/api/v1/blogs")
+  let res = await data.json()
+  console.log(res.blogs)
+  setBlogs(res.blogs);
+
+  
+}
+  useEffect(()=>{
+    fetchBlogs()
+  },[])
   async function handleSubmit() {
-    let response = await fetch("http://localhost:3000/users", {
+    let response = await fetch("http://localhost:3000/api/v1/users", {
       method: "POST",
       body: JSON.stringify(userData),
 
@@ -36,6 +49,16 @@ function App() {
       </div>
       <br />
       <button onClick={handleSubmit}>SignUp</button>
+
+      {
+        blogs.map(blog=>(
+          <ul>
+            <li>{blog.title}</li>
+            <p>{blog.description}</p>
+          </ul>
+
+        ))
+      }
     </div>
   );
 }
