@@ -43,7 +43,8 @@ async function createUser(req, res) {
         name: newUser.name,
         email: newUser.email,
         blogs: newUser.blogs,
-      },token
+        token
+      },
     });
   } catch (err) {
     return res.status(500).json({
