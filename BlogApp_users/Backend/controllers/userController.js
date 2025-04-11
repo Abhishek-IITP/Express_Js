@@ -72,6 +72,7 @@ async function login(req, res) {
       return res.status(400).json({
         message: "User does not exist with this email",
         success: false,
+
       });
     }
 
@@ -84,6 +85,8 @@ async function login(req, res) {
         success: false,
       });
     }
+    const token = await generateJWT({ id: existingUser._id, email: existingUser.email });
+
 
 
     return res.status(200).json({
@@ -93,6 +96,7 @@ async function login(req, res) {
       token
     });
   } catch (err) {
+    // console.error("Login error:", err); 
     return res.status(500).json({
       message: "Server error",
       success: false,
