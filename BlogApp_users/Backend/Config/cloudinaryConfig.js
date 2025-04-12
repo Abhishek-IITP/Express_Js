@@ -5,12 +5,12 @@ async function cloudinaryConfig() {
     await cloudinary.config(
         {
             cloud_name: "dag2sttzw",
-            api_key: "414192651238631",
+            api_key: "384151751457187",
             api_secret:"RLrxPgqCarYtfmssfKHgpkNUXkc"
         }
     )
     
-    console.log("Cloudinary COnfig Successfull")
+    console.log("Cloudinary Config Successfull")
   } catch (error) {
     console.log("error occur while config cloundinary")
     console.log(error.message)
