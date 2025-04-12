@@ -2,10 +2,11 @@ const express = require('express');
 const {createBlogs , getBlogs, getBlogsById, updateBlogs, deleteBlogs,likeBlogs} = require('../controllers/blogController');
 const verifyUser = require('../Middlewares/auth');
 const { addComment, deleteComment, editComment, likeComment } = require('../controllers/commentController');
+const upload = require('../Utils/multer');
 
 const route= express.Router();
 
-route.post("/blogs", verifyUser ,createBlogs);
+route.post("/blogs", verifyUser, upload.single("image") ,createBlogs);
 
 route.get("/blogs",getBlogs );
 
