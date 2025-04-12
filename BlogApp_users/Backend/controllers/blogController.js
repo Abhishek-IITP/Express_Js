@@ -7,6 +7,8 @@ async function createBlogs(req, res) {
 
   try {
     const { title, description, draft } = req.body;
+    const image= req.file;
+    console.log({title,description,draft,image})
     // console.log(req.body);
 
     if (!title || !description) {
