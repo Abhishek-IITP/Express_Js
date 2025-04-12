@@ -10,6 +10,10 @@ const blogSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    image:{
+      type: String,
+      required: true
+    },
     draft: { type: Boolean, default: false },
     creator:{
       type: mongoose.Schema.Types.ObjectId,
