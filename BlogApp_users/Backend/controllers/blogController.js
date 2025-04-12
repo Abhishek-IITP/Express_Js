@@ -1,14 +1,16 @@
 const Blog = require("../models/blogSchema");
 const Comment = require("../models/commentSchema");
 const User = require("../models/userSchema");
+const {uploadImage , deleteImageFromCloudinary} = require("../Utils/uploadImage");
+const fs = require ("fs")
 
 async function createBlogs(req, res) {
   const creator = req.user;
 
   try {
     const { title, description, draft } = req.body;
-    const image= req.file;
-    console.log({title,description,draft,image})
+    const image = req.file;
+    console.log({ title, description, draft, image });
     // console.log(req.body);
 
     if (!title || !description) {
@@ -26,7 +28,20 @@ async function createBlogs(req, res) {
     }
     // console.log(findUser)
 
-    const blog = await Blog.create({ title, description, draft, creator });
+    // cloudinary
+
+    const { secure_url, public_id } = await uploadImage(image.path);
+
+    fs.unlinkSync(image.path)
+    
+    const blog = await Blog.create({
+      title,
+      description,
+      draft,
+      creator,
+      image: secure_url,
+      imageId: public_id,
+    });
     await User.findByIdAndUpdate(creator, { $push: { blogs: blog._id } });
     return res.status(201).json({
       message: "Blog created successfully",
@@ -67,19 +82,19 @@ async function getBlogs(req, res) {
 
 async function getBlogsById(req, res) {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
     const blog = await Blog.findById(id).populate({
-      path : "comments",
-      populate:{
-        path: 'user',
-        select: "name email"
-      }
+      path: "comments",
+      populate: {
+        path: "user",
+        select: "name email",
+      },
     });
     return res.status(200).json({
       message: "Blog Fetched Successfully",
       success: true,
-      blog
-    })
+      blog,
+    });
   } catch (err) {
     return res.status(500).json({
       message: "Error occurred while fetching blogs",
@@ -160,6 +175,10 @@ async function deleteBlogs(req, res) {
         success: false,
       });
     }
+
+
+    await deleteImageFromCloudinary(blog.imageId)
+
     await Blog.findByIdAndDelete(id);
     await User.findByIdAndUpdate(creator, { $pull: { blogs: id } });
     return res
@@ -207,12 +226,10 @@ async function likeBlogs(req, res) {
   }
 }
 
-
-
 module.exports = {
   createBlogs,
   getBlogs,
-  getBlogsById, 
+  getBlogsById,
   updateBlogs,
   deleteBlogs,
   likeBlogs,
